@@ -41,4 +41,5 @@ class AmazonReviewsDataset(Dataset):
 		# Modify this to get the BERT embeddings for the words in the review text and return them as a fixed length token sequence
 		# NOTE / CONCERN: If we perform the embedding here (instead of in __init__), this may result in a significant slow-down during training
 		# There's also a LOT of repeated work in each epoch
+		# Also if there's a problem with the embeddings, we won't know until we start training
 		return bertEmbed.get_token_embeddings(self.review_text.iloc[idx]), self.labels.iloc[idx]
