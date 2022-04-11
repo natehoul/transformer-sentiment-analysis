@@ -17,7 +17,7 @@ def get_token_embeddings(sentence):
 	segments_tensor = torch.tensor([segments_ids])
 
 	with torch.no_grad():
-		outputs = model(tokens_tensor, segments_tensor)
+		outputs = model(tokens_tensor, segments_tensor) # NOTE: Error here. See below
 		hidden_states = outputs[2]
 
 	token_embeddings = torch.stack(hidden_states, dim=0)
@@ -29,3 +29,7 @@ def get_token_embeddings(sentence):
 		sum_vec = torch.sum(token[-4:], dim=0)
 		token_vecs_sum.append(sum_vec)
 	return token_vecs_sum
+
+
+# NOTE: Some, but not all, of the data instances result in the following error:
+# RuntimeError: The expanded size of the tensor (745) must match the existing size (512) at non-singleton dimension 1.  Target sizes: [1, 745].  Tensor sizes: [1, 512]

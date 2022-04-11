@@ -1,13 +1,16 @@
+from posixpath import basename
 import pandas as pd
 import gzip
 
 import os
+from tqdm import tqdm
 
-false = False
+
 true = True
-
+false = False
 
 # Print iterations progress
+# TODO: Remove. Use tqdm instead.
 def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
 	"""
 		Call in a loop to create terminal progress bar
@@ -35,13 +38,12 @@ def parse(path):
 	for l in g:
 		yield eval(l)
 
-def getDF(path):
-	i = 0
+
+def getDF(path, size):
+	basename = os.path.basename(path)
 	df = {}
-	for d in parse(path):
+	for i, d in enumerate(tqdm(parse(path), desc=f'Loading {basename}', total=size)):
 		df[i] = d
-		i += 1
-		printProgressBar(i, 9015203)
   
 	return pd.DataFrame.from_dict(df, orient='index')
 
