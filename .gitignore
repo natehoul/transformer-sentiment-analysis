@@ -163,6 +163,8 @@ cython_debug/
 # Everything above this point is the default python gitnore from https://github.com/github/gitignore/blob/main/Python.gitignore
 # Everything below this point has been added manually as a part of this project
 
-# Ignore the raw data, because it's really big and can be downloaded from https://nijianmo.github.io/amazon/index.html#subsets
+# Ignore the data files, because it's really big and can be downloaded from https://nijianmo.github.io/amazon/index.html#subsets
 *.json.gz
 *.pkl
+*.npy
+*.pt
