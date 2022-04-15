@@ -16,7 +16,7 @@ class AttentionHead(nn.Module):
 		self.k = nn.Linear(dim_in, dim_k)
 		self.v = nn.Linear(dim_in, dim_k)
 
-	def forward(slef, query: Tensor, key: Tensor, value: Tensor) -> Tensor:
+	def forward(self, query: Tensor, key: Tensor, value: Tensor) -> Tensor:
 		return scaled_dot_product_attention(self.q(query), self.k(key), self.v(value))
 
 class MultiHeadAttention(nn.Module):
@@ -39,7 +39,7 @@ def position_encoding(
 	dim = torch.arange(dim_model, dtype=torch.float, device=device).reshape(1, 1, -1)
 	phase = pos / (1e4 ** (dim // dim_model))
 	
-	return torch.where(dim.long() % 2 == 0, toch.sin(phase), torch.cos(phase))
+	return torch.where(dim.long() % 2 == 0, torch.sin(phase), torch.cos(phase))
 
 def feed_forward(dim_input: int = 512, dim_feedforward: int = 2048) -> nn.Module:
 	return nn.Sequential(
@@ -86,7 +86,7 @@ class TransformerEncoder(nn.Module):
 				TransformerEncoderLayer(dim_model, num_heads, dim_feedforward, dropout) for _ in range(num_layers)
 			]
 		)
-		self.output = nn.Linear(dim_input, output_size)
+		self.output = nn.Linear(dim_input, output_size) # NOTE: dim_input not defined in scope
 
 	def forward(self, src: Tensor) -> Tensor:
 		seq_len, dimension = src.size(1), src.size(2)
