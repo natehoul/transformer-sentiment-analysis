@@ -1,4 +1,5 @@
 import torch
+from torch import Tensor
 from torch import nn
 import torch.nn.functional as f
 
@@ -8,7 +9,7 @@ def scaled_dot_product_attention(query, Tensor, key: Tensor, value: Tensor) -> T
 	softmax = f.softmax(temp / scale, dim=-1)
 	return softmax.bmm(value)
 
-def class AttentionHead(nn.Module):
+class AttentionHead(nn.Module):
 	def __init__(self, dim_in: int, dim_q: int, dim_k: int):
 		super().__init__()
 		self.q = nn.Linear(dim_in, dim_q)
