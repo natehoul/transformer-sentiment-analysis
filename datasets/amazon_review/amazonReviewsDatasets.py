@@ -42,4 +42,5 @@ class AmazonReviewsDataset(Dataset):
 		# NOTE / CONCERN: If we perform the embedding here (instead of in __init__), this may result in a significant slow-down during training
 		# There's also a LOT of repeated work in each epoch
 		# Also if there's a problem with the embeddings, we won't know until we start training
+		# Correction: It just occurred to me that the embeddings change slightly as the embedding model trains, so redoing the work is necessary
 		return bertEmbed.get_token_embeddings(self.review_text.iloc[idx]), self.labels.iloc[idx]
