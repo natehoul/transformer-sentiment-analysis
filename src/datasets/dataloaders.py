@@ -52,13 +52,13 @@ def generate_dataloader(inputs, masks, labels, shuffle, batch_size):
 # This is the one to use!
 # Input: The name of a dataset (any valid alias from raw_data)
 # Output: balanced, processed, tokenized dataloaders for training and validation
-def get_dataloaders_end_to_end(dataset_name, binarize=True, val_split=0.2, save_data=True, batch_size=32):
+def get_dataloaders_end_to_end(dataset_name, binarize=True, val_split=0.2, save_data=True, batch_size=32, token_len=64):
     dataset_name = resolve_alias(dataset_name)
 
     # Tokenized data is available, so just load it directly
     if processed_data.exists(dataset_name, binarize=binarize, is_val=True, val_split=val_split, tokenized=True):
-        t_input, t_mask, t_label = processed_data.load_tokens(dataset_name, binarize=binarize, is_val=False, val_split=val_split)
-        v_input, v_mask, v_label = processed_data.load_tokens(dataset_name, binarize=binarize, is_val=True, val_split=val_split)
+        t_input, t_mask, t_label = processed_data.load_tokens(dataset_name, binarize=binarize, is_val=False, val_split=val_split, token_len=token_len)
+        v_input, v_mask, v_label = processed_data.load_tokens(dataset_name, binarize=binarize, is_val=True, val_split=val_split, token_len=token_len)
 
 
     # Tokenized data not available, must tokenize
@@ -74,15 +74,15 @@ def get_dataloaders_end_to_end(dataset_name, binarize=True, val_split=0.2, save_
     
         # Perform tokenization
         t_label = tensor(ty)
-        t_input, t_mask = tokenize(tx)
+        t_input, t_mask = tokenize(tx, token_len)
 
         v_label = tensor(vy)
-        v_input, v_mask = tokenize(vx)
+        v_input, v_mask = tokenize(vx, token_len)
 
         # Save tokens for later
         if save_data:
-            processed_data.save_tokens(dataset_name, t_input, t_mask, t_label, binarize=binarize, is_val=False, val_split=val_split)
-            processed_data.save_tokens(dataset_name, v_input, v_mask, v_label, binarize=binarize, is_val=True, val_split=val_split)
+            processed_data.save_tokens(dataset_name, t_input, t_mask, t_label, binarize=binarize, is_val=False, val_split=val_split, token_len=token_len)
+            processed_data.save_tokens(dataset_name, v_input, v_mask, v_label, binarize=binarize, is_val=True, val_split=val_split, token_len=token_len)
 
 
     t_loader = generate_dataloader(t_input, t_mask, t_label, shuffle=True, batch_size=batch_size)
