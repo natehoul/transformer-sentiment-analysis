@@ -86,7 +86,7 @@ class TransformerEncoder(nn.Module):
 				TransformerEncoderLayer(dim_model, num_heads, dim_feedforward, dropout) for _ in range(num_layers)
 			]
 		)
-		self.output = nn.Linear(dim_input, output_size) # NOTE: dim_input not defined in scope
+		self.output = nn.Linear(dim_model, output_size)
 
 	def forward(self, src: Tensor) -> Tensor:
 		seq_len, dimension = src.size(1), src.size(2)
