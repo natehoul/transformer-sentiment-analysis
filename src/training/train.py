@@ -22,15 +22,16 @@ import saved_models
 
 ### HYPERPARAMETERS ###
 
-# Data
+# Data (not exhaustive, see the params for get_dataloaders)
 DATASET = 'music'
+NUM_BERT_TOKENS = 64
 
-# Model (not exhaustive)
+# Model (not exhaustive, see the params for BertClassifier)
 NUM_CLASSES = 2
 DROPOUT = 0.1
 
 # Optimizer
-MOMENTUM = 0.9
+MOMENTUM = 0.9 # Currently unused becuse we're using Adam
 LEARNING_RATE = 0.02
 REGULARIZATION_WEIGHT = 0
 EPSILON = 1e-8
@@ -67,7 +68,8 @@ def initialize(model_to_load=''):
     
     train_dataloader, val_dataloader = get_dataloaders(dataset_name=DATASET, 
                                                        binarize=NUM_CLASSES == 2,
-                                                       batch_size=BATCH_SIZE)
+                                                       batch_size=BATCH_SIZE,
+                                                       token_len=NUM_BERT_TOKENS)
     
     num_steps = len(train_dataloader) * NUM_EPOCHS
 

@@ -7,11 +7,11 @@ import torch
 
 
 # Procedurally create a filename based on the details of the data
-def generate_filename(name, binarize, is_val, val_split, tokenized, is_data=True) -> str:
+def generate_filename(name, binarize, is_val, val_split, tokenized, token_len=0, is_data=True) -> str:
     b = '_binary' if binarize else ''
     v = f'_validation_{int(val_split*100)}' if is_val else f'_training_{int((1-val_split)*100)}'
     d = '_data' if is_data else '_labels'
-    t = f'_tokens{d}' if tokenized else ''
+    t = f'_tokens{d}_{token_len}' if tokenized else ''
     ext = '.pt' if tokenized else '.npy'
     basename = f'{name}{b}{v}{t}{ext}'
     filename = f'{os.path.dirname(__file__)}/{basename}'
@@ -20,8 +20,8 @@ def generate_filename(name, binarize, is_val, val_split, tokenized, is_data=True
 
 
 # Check if a file already exists for some data, based on the details of that data
-def exists(name, binarize=True, is_val=False, val_split=0.2, tokenized=False) -> bool:
-    filename = generate_filename(name, binarize, is_val, val_split, tokenized)
+def exists(name, binarize=True, is_val=False, val_split=0.2, tokenized=False, token_len=64) -> bool:
+    filename = generate_filename(name, binarize, is_val, val_split, tokenized, token_len)
     return os.path.isfile(f'{filename}')
 
 
@@ -47,9 +47,9 @@ def load(name, binarize=True, is_val=False, val_split=0.2):
 
 # Save the tokenized data used by BERT
 # Inputs, masks, and labels are pytorch tensors, not np arrays
-def save_tokens(name, inputs, masks, labels, binarize=True, is_val=False, val_split=0.2):
-    data_filename = generate_filename(name, binarize, is_val, val_split, tokenized=True, addendum='_data')
-    labels_filename = generate_filename(name, binarize, is_val, val_split, tokenized=True, addendum='_labels')
+def save_tokens(name, inputs, masks, labels, binarize=True, is_val=False, val_split=0.2, token_len=64):
+    data_filename = generate_filename(name, binarize, is_val, val_split, tokenized=True, token_len=token_len, is_data=True)
+    labels_filename = generate_filename(name, binarize, is_val, val_split, tokenized=True, token_len=token_len, is_data=False)
     data = torch.stack((inputs, masks))
     torch.save(data, data_filename)
     torch.save(labels, labels_filename)
@@ -58,9 +58,9 @@ def save_tokens(name, inputs, masks, labels, binarize=True, is_val=False, val_sp
 # Load the tokenized data for use by BERT
 # This way, we only have to perform the (costly) tokenization process once for a given data spec
 # Inputs, masks, and labels are pytorch tensors, not np arrays
-def load_tokens(name, binarize=True, is_val=False, val_split=0.2):
-    data_filename = generate_filename(name, binarize, is_val, val_split, tokenized=True, is_data=True)
-    labels_filename = generate_filename(name, binarize, is_val, val_split, tokenized=True, is_data=False)
+def load_tokens(name, binarize=True, is_val=False, val_split=0.2, token_len=64):
+    data_filename = generate_filename(name, binarize, is_val, val_split, tokenized=True, token_len=token_len, is_data=True)
+    labels_filename = generate_filename(name, binarize, is_val, val_split, tokenized=True, token_len=token_len, is_data=False)
     data = torch.load(data_filename)
     labels = torch.load(labels_filename)
     inputs, masks = data[0], data[1]

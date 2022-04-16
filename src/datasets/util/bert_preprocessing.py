@@ -8,7 +8,6 @@ from util import tokenizer
 from tqdm import tqdm
 
 
-MAX_LEN = 256  # Hyperparameter, consider tweaking (I picked this VERY arbitrarily)
 
 
 # BERT doesn't need much preprocessing, but we can add more if we need to
@@ -21,7 +20,7 @@ def preprocess_text(s):
 
 
 # Create a function to tokenize a set of texts
-def tokenize(data):
+def tokenize(data, token_len):
     """Perform required preprocessing steps for pretrained BERT.
     @param    data (np.array): Array of texts to be processed.
     @return   input_ids (torch.Tensor): Tensor of token ids to be fed to a model.
@@ -44,7 +43,7 @@ def tokenize(data):
         encoded_review = tokenizer.encode_plus(
             text=review,                    # Preprocess sentence (put preprocess_text(review) here if using it)
             add_special_tokens=True,        # Add `[CLS]` and `[SEP]`
-            max_length=MAX_LEN,             # Max length to truncate/pad
+            max_length=token_len,             # Max length to truncate/pad
             padding='max_length',           # Pad sentence to max length
             truncation=True,                # Truncate to max length
             #return_tensors='pt',           # Return PyTorch tensor (commented out bc of the append below?)
