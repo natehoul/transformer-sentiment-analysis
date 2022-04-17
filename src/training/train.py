@@ -59,7 +59,7 @@ def initialize(model_to_load=''):
 
     model = model.to(device)
 
-    criterion = torch.nn.CrossEntropyLoss() if NUM_CLASSES == 2 else torch.nn.BCEWithLogitsLoss()
+    criterion = torch.nn.CrossEntropyLoss()# if NUM_CLASSES == 2 else torch.nn.BCEWithLogitsLoss()
 
     optimizer = torch.optim.Adam(params=model.parameters(), 
                                  lr=LEARNING_RATE, 
@@ -119,8 +119,10 @@ def train_epoch(train_dataloader, model, criterion, optimizer, scheduler, perfor
 
         model.zero_grad()
 
+        print(inputs.size())
+
         logits = model(inputs, masks)
-        loss = criterion(logits, labels)
+        loss = criterion(torch.argmax(logits, dim=1).type(torch.FloatTensor), labels.type(torch.LongTensor))
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0) # Clip to prevent exploding gradients
         optimizer.step()

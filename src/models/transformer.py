@@ -3,7 +3,7 @@ from torch import Tensor
 from torch import nn
 import torch.nn.functional as f
 
-def scaled_dot_product_attention(query, Tensor, key: Tensor, value: Tensor) -> Tensor:
+def scaled_dot_product_attention(query: Tensor, key: Tensor, value: Tensor) -> Tensor:
 	temp = query.bmm(key.transpose(1, 2))
 	scale = query.size(-1) ** 0.5
 	softmax = f.softmax(temp / scale, dim=-1)
@@ -90,7 +90,7 @@ class TransformerEncoder(nn.Module):
 
 	def forward(self, src: Tensor) -> Tensor:
 		seq_len, dimension = src.size(1), src.size(2)
-		src += position_encoding(seq_len, dimension)
+		src += position_encoding(seq_len, dimension, device=src.get_device())
 		for layer in self.layers:
 			src = layer(src)
 

@@ -28,6 +28,8 @@ def get_token_embeddings(sentence):
 	for token in token_embeddings:
 		sum_vec = torch.sum(token[-4:], dim=0)
 		token_vecs_sum.append(sum_vec)
+	print('EMBEDDING SIZE')
+	print(token_vecs_sum.size())
 	return token_vecs_sum
 
 
