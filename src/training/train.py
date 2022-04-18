@@ -303,8 +303,9 @@ def train(session_name='', model_to_load='', **kwargs):
         saved_models.save(model, session_name)
 
         print(f'Epoch: {epoch:>2}', end='\t')
-        for metric, value in performance_metrics.items():
-            print(f'{metric}: {value:.4f}', end='\t')
+        for metric, values in performance_metrics.items():
+            most_recent_value = values[-1]
+            print(f'{metric}: {most_recent_value:.4f}', end='\t')
         print()
 
     print("TRAINING COMPLETE")
