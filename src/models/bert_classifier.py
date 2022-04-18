@@ -31,10 +31,10 @@ class BertClassifier(nn.Module):
 
         else:
             self.classifier = nn.Sequential(
-            nn.Linear(dim_model, 50),
-            nn.ReLU(),
-            nn.Dropout(dropout),
-            nn.Linear(50, num_classes)
+                nn.Linear(dim_model, 50),
+                nn.ReLU(),
+                nn.Dropout(dropout),
+                nn.Linear(50, num_classes)
             )
 
         self.use_advanced_model = use_advanced_model
