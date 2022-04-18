@@ -23,7 +23,7 @@ class AmazonReviewsDataset(Dataset):
         else:
             df = loadData.getDF(path, size)
             df = df[selected_columns]
-            df['vote'] = df['vote'].fillna(0)
+            df['vote'] = df['vote'].str.replace(',', '').fillna(0).astype(int)
             df = df.dropna()
             
             if save_pickle:

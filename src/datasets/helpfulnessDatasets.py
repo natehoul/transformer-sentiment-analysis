@@ -25,7 +25,7 @@ class HelpfulnessDataset(Dataset):
         else:
             df = loadData.getDF(path, size)
             df = df[selected_columns]
-            df['vote'] = df['vote'].fillna(0)
+            df['vote'] = df['vote'].str.replace(',', '').fillna(0).astype(int)
             df = df.dropna()
 
             if save_pickle:
@@ -33,22 +33,10 @@ class HelpfulnessDataset(Dataset):
                 print(f'Saving {pickle_name}')
                 df.to_pickle(pickle_name)
 
-        # The top half (or quartile or quintile) highest-rated reviews are considered "helpful" (class 1)
-        # The rest are considered "unhelpful" (class 0)
-
-        # Default everything to "unhelpful"
+        # The overwhelming majority of reviews have 0 helpfulness votes (~85% of the music instruments dataset)
+        # Just classify reviews with ANY helpfulness votes as begin helpful and the rest unhelpful
         df['overall'] = 0
-
-        for product in tqdm(df['asin'].unique(), desc="Calculating Helpfulness"):
-            product_df = df[df['asin'] == product].sort_values(by=['vote'], ascending=False)
-            
-            num_reviews_of_this_product = product_df.shape[0]
-            midpoint = num_reviews_of_this_product // 5 # 2 for half, 4 for quartile, 5 for quintile (bigger = pickier)
-            cutoff_vote_count = product_df.iloc[midpoint]['vote']
-            
-            # Set all reviews with more helpfullness than the midpoit as "helpful"
-            df.loc[(df['asin'] == product) & (df['vote'] > cutoff_vote_count), 'overall'] = 1
-
+        df.loc[df['vote'] > 0, 'overall'] = 1
 
         self.review_text = df['reviewText'].copy()
         self.labels = df['overall'].copy()
