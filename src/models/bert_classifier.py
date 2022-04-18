@@ -3,15 +3,11 @@
 # Then use a classifer on the embedded tokens
 # Main difference is that the classifer is much more sophisticated
 
-from pprint import pprint
-import sys
-
 import torch
 import torch.nn as nn
 from transformers import BertModel
 from transformer import TransformerEncoder
 
-import numpy as np
 
 
 # Create the BertClassfier class

@@ -1,4 +1,3 @@
-from posixpath import basename
 import pandas as pd
 import gzip
 
