@@ -7,7 +7,11 @@ from torch.utils.data import Dataset
 
 from util import loadData, bertEmbed
 from raw_data import get_raw_data
-from __init__ import selected_columns
+
+
+# If you ever change this (such as to add 'vote'), delete all .pkl files from raw_data
+# Also PLEASE keep this consistet with the version in helpfulnessDatasess.py
+selected_columns = ['reviewText', 'overall', 'asin', 'vote']
 
 
 class HelpfulnessDataset(Dataset):
