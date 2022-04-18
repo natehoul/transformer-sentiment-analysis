@@ -185,33 +185,32 @@ def validate_epoch(val_dataloader, model, criterion, performance_metrics, device
     else:
         correct = 0
 
-
-    for inputs, masks, labels in tqdm(val_dataloader, desc='Validating'):
-        inputs = inputs.to(device)
-        masks = masks.to(device)
-        labels = labels.to(device)
-    
-        with torch.no_grad():
-            logits = model(inputs, masks)
+    with torch.no_grad():
+        for inputs, masks, labels in tqdm(val_dataloader, desc='Validating'):
+            inputs = inputs.to(device)
+            masks = masks.to(device)
+            labels = labels.to(device)
         
-        loss = criterion(logits, labels)
-        losses.append(loss.item())
+            logits = model(inputs, masks)
+            
+            loss = criterion(logits, labels)
+            losses.append(loss.item())
 
-        prediction = torch.argmax(logits, dim=1) # may need to add ".flatten()"
-        ground_truth = torch.argmax(labels, dim=1) # as above
+            prediction = torch.argmax(logits, dim=1) # may need to add ".flatten()"
+            ground_truth = torch.argmax(labels, dim=1) # as above
 
-        # Binary classifer, so we can get confusion matrix easily
-        if hyperparameters['NUM_CLASSES'] == 2:
-            matrix = confusion_matrix(ground_truth.cpu().numpy(), prediction.cpu().numpy())
-            tn += matrix[0][0]
-            fn += matrix[1][0]
-            tp += matrix[1][1]
-            fp += matrix[0][1]
+            # Binary classifer, so we can get confusion matrix easily
+            if hyperparameters['NUM_CLASSES'] == 2:
+                matrix = confusion_matrix(ground_truth.cpu().numpy(), prediction.cpu().numpy())
+                tn += matrix[0][0]
+                fn += matrix[1][0]
+                tp += matrix[1][1]
+                fp += matrix[0][1]
 
-        # More than 2 classes, so we'll just settle for accuracy only
-        else:
-            good_predictions = (prediction == ground_truth)
-            correct += good_predictions.sum().item()
+            # More than 2 classes, so we'll just settle for accuracy only
+            else:
+                good_predictions = (prediction == ground_truth)
+                correct += good_predictions.sum().item()
 
     
     loss = sum(losses) / len(losses)
