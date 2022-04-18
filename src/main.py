@@ -15,4 +15,10 @@ from training.train import train
 
 
 if __name__ == "__main__":
-    train('binary_music_lr02_batch128_epochs2_debugging')
+
+
+    # PLEASE READ THIS COMMET!!!!!!!!
+    # If you want to change the hyperparameters found in train.py,
+    # you can do so by adding them as all-caps keyword arguments to the
+    # train() function
+    train('binary_music_lr02_batch32_epochs2_debugging')
