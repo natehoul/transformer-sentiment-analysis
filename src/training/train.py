@@ -124,6 +124,14 @@ def train_epoch(train_dataloader, model, criterion, optimizer, scheduler, perfor
         model.zero_grad()
 
         logits = model(inputs, masks)
+
+        if True:
+            print(logits)
+            print(logits.shape)
+            print(labels)
+            print(labels.shape)
+            exit(0)
+
         loss = criterion(logits, labels)
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0) # Clip to prevent exploding gradients
