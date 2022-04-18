@@ -94,4 +94,4 @@ class TransformerEncoder(nn.Module):
 		for layer in self.layers:
 			src = layer(src)
 
-		return self.output(src)
+		return self.output(src[:, 0, :]).squeeze()
