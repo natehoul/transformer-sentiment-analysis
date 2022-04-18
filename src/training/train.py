@@ -1,5 +1,7 @@
 # Train the model!
 
+from tqdm import tqdm
+
 from sklearn.metrics import confusion_matrix
 
 import torch
@@ -24,6 +26,7 @@ default_hyperparameters = {
     # Model (not exhaustive, see the params for BertClassifier)
     "NUM_CLASSES": 2,
     "DROPOUT": 0.1,
+    "USE_ADVANCED_MODEL": False,
 
     # Optimizer
     "MOMENTUM": 0.9, # Currently unused becuse we're using Adam
@@ -50,7 +53,9 @@ def initialize(model_to_load='', hyperparameters=default_hyperparameters):
     if model_to_load and saved_models.exists(model_to_load):
         model = saved_models.load(model_to_load)
     else:
-        model = BertClassifier(num_classes=hyperparameters['NUM_CLASSES'], dropout=hyperparameters['DROPOUT'])
+        model = BertClassifier(num_classes=hyperparameters['NUM_CLASSES'], 
+                               dropout=hyperparameters['DROPOUT'], 
+                               use_advanced_model=hyperparameters['USE_ADVANCED_MODEL'])
 
     model = model.to(device)
 
@@ -108,7 +113,7 @@ def train_epoch(train_dataloader, model, criterion, optimizer, scheduler, perfor
         correct = 0
 
 
-    for inputs, masks, labels in train_dataloader:
+    for inputs, masks, labels in tqdm(train_dataloader, desc='Training'):
         inputs = inputs.to(device)
         masks = masks.to(device)
         labels = labels.to(device)
@@ -125,11 +130,19 @@ def train_epoch(train_dataloader, model, criterion, optimizer, scheduler, perfor
         losses.append(loss.item())
 
         prediction = torch.argmax(logits, dim=1) # may need to add ".flatten()"
-        ground_truth = labels # may need to process this somehow. Cast to int?
+        ground_truth = torch.argmax(labels, dim=1) # as above
+
+        if False:
+            print(logits)
+            print(logits.shape)
+            print(labels)
+            print(prediction)
+            print(ground_truth)
+            exit(0)
 
         # Binary classifer, so we can get confusion matrix easily
         if hyperparameters['NUM_CLASSES'] == 2:
-            matrix = confusion_matrix(ground_truth, prediction)
+            matrix = confusion_matrix(ground_truth.cpu().numpy(), prediction.cpu().numpy())
             tn += matrix[0][0]
             fn += matrix[1][0]
             tp += matrix[1][1]
@@ -178,10 +191,10 @@ def validate_epoch(val_dataloader, model, criterion, performance_metrics, device
         correct = 0
 
 
-    for inputs, masks, labels in val_dataloader:
+    for inputs, masks, labels in tqdm(val_dataloader, desc='Validating'):
         inputs = inputs.to(device)
         masks = masks.to(device)
-        labels = labels.to(device)
+        labels = labels.to(device).long()
     
         with torch.no_grad():
             logits = model(inputs, masks)
@@ -190,11 +203,11 @@ def validate_epoch(val_dataloader, model, criterion, performance_metrics, device
         losses.append(loss.item())
 
         prediction = torch.argmax(logits, dim=1) # may need to add ".flatten()"
-        ground_truth = labels # may need to process this somehow. Cast to int?
+        ground_truth = torch.argmax(labels, dim=1) # as above
 
         # Binary classifer, so we can get confusion matrix easily
         if hyperparameters['NUM_CLASSES'] == 2:
-            matrix = confusion_matrix(ground_truth, prediction)
+            matrix = confusion_matrix(ground_truth.cpu().numpy(), prediction.cpu().numpy())
             tn += matrix[0][0]
             fn += matrix[1][0]
             tp += matrix[1][1]
