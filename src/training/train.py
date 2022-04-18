@@ -30,7 +30,7 @@ default_hyperparameters = {
 
     # Optimizer
     "MOMENTUM": 0.9, # Currently unused becuse we're using Adam
-    "LEARNING_RATE": 0.02,
+    "LEARNING_RATE": 0.05,
     "REGULARIZATION_WEIGHT": 0,
     "EPSILON": 1e-8,
 
