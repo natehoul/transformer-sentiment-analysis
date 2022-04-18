@@ -43,7 +43,7 @@ class HelpfulnessDataset(Dataset):
             product_df = df[df['asin'] == product].sort_values(by=['vote'], ascending=False)
             
             num_reviews_of_this_product = product_df.shape[0]
-            midpoint = num_reviews_of_this_product // 2 # consider changing this to quartile or quintile
+            midpoint = num_reviews_of_this_product // 5 # 2 for half, 4 for quartile, 5 for quintile (bigger = pickier)
             cutoff_vote_count = product_df.iloc[midpoint]['vote']
             
             # Set all reviews with more helpfullness than the midpoit as "helpful"
