@@ -21,7 +21,7 @@ default_hyperparameters = {
     "DATASET": 'music',
     "DATA_TYPE": 'rating',
     "NUM_BERT_TOKENS": 64,
-    "BATCH_SIZE": 32,
+    "BATCH_SIZE": 128,
     
     # Model (not exhaustive, see the params for BertClassifier)
     "NUM_CLASSES": 2,
