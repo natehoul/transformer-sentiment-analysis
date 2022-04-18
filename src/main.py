@@ -14,6 +14,41 @@ for module in module_dirs:
 from training.train import train
 
 
+def lots_of_training(dataset='tools', epochs=20): # Consider changing the default epochs to 20 in train.py
+
+    # Baseline results
+    train(  DATASET=dataset,
+            DATA_TYPE='rating',
+            NUM_EPOCHS=epochs)
+
+    train(  DATASET=dataset,
+            DATA_TYPE='helpfulness',
+            NUM_EPOCHS=epochs)
+
+    # Do more tokens result in higher accuracy?
+    train(  DATASET=dataset,
+            DATA_TYPE='rating',
+            NUM_BERT_TOKENS=128,
+            NUM_EPOCHS=epochs)
+
+    train(  DATASET=dataset,
+            DATA_TYPE='helpfulness',
+            NUM_BERT_TOKENS=128,
+            NUM_EPOCHS=epochs)
+
+    
+    # Is dropout actually bad?
+    train(  DATASET=dataset,
+            DATA_TYPE='rating',
+            DROPOUT=0,
+            NUM_EPOCHS=epochs)
+
+    train(  DATASET=dataset,
+            DATA_TYPE='helpfulness',
+            DROPOUT=0,
+            NUM_EPOCHS=epochs)
+
+
 if __name__ == "__main__":
 
 
