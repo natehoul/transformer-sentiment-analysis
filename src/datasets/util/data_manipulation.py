@@ -65,3 +65,20 @@ def create_validation_split(data, labels, val_split=0.20):
     vx, vy = data[validation_indices], labels[validation_indices]
 
     return tx, ty, vx, vy
+
+
+
+# Converts a number representing a class to an array
+# i.e. 0 --> [1, 0, 0 ,0]; 1 --> [0, 1, 0, 0]
+def create_class_vector(c, num_classes):
+    v = [0] * num_classes
+    v[int(c)] = 1
+    return v
+
+
+# Apply create_class_vector to an array of class labels
+# input is a numpy ndarray
+def convert_labels_to_vectors(labels):
+    num_classes = len(np.unique(labels))
+    new_labels = [create_class_vector(l, num_classes) for l in labels]
+    return np.array(new_labels)
