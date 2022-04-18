@@ -32,7 +32,7 @@ default_hyperparameters = {
     "EPSILON": 1e-8,
 
     # Misc
-    "NUM_EPOCHS": 2
+    "NUM_EPOCHS": 2 # Increase this once everything actually works
 }
 
 ### END HYPERPARAMETERS ###
