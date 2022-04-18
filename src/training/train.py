@@ -118,19 +118,10 @@ def train_epoch(train_dataloader, model, criterion, optimizer, scheduler, perfor
         masks = masks.to(device)
         labels = labels.to(device)
 
-        #if hyperparameters['USE_ADVANCED_MODEL']:
-        #    labels = labels.long()
-
         model.zero_grad()
 
         logits = model(inputs, masks)
 
-        if False:
-            print(logits)
-            print(logits.shape)
-            print(labels)
-            print(labels.shape)
-            exit(0)
 
         loss = criterion(logits, labels)
         loss.backward()
@@ -143,13 +134,6 @@ def train_epoch(train_dataloader, model, criterion, optimizer, scheduler, perfor
         prediction = torch.argmax(logits, dim=1) # may need to add ".flatten()"
         ground_truth = torch.argmax(labels, dim=1) # as above
 
-        if False:
-            print(logits)
-            print(logits.shape)
-            print(labels)
-            print(prediction)
-            print(ground_truth)
-            exit(0)
 
         # Binary classifer, so we can get confusion matrix easily
         if hyperparameters['NUM_CLASSES'] == 2:
@@ -205,7 +189,7 @@ def validate_epoch(val_dataloader, model, criterion, performance_metrics, device
     for inputs, masks, labels in tqdm(val_dataloader, desc='Validating'):
         inputs = inputs.to(device)
         masks = masks.to(device)
-        labels = labels.to(device).long()
+        labels = labels.to(device)
     
         with torch.no_grad():
             logits = model(inputs, masks)
