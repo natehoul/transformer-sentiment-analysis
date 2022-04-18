@@ -17,7 +17,7 @@ class BertClassifier(nn.Module):
     def __init__(self, num_classes: int = 2, num_layers: int = 6, dim_model: int = 768, num_heads: int = 8, dim_feedforward: int = 2048, dropout: float = 0.1, use_advanced_model=False):
         super(BertClassifier, self).__init__()
         # Instantiate BERT model
-        self.bert = BertModel.from_pretrained('bert-base-uncased') #, output_hidden_states=True)
+        self.bert = BertModel.from_pretrained('bert-base-uncased', output_hidden_states=True)
 
         # Instantiate a transformer-based classifer
         if use_advanced_model:
