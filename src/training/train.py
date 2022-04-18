@@ -119,7 +119,7 @@ def train_epoch(train_dataloader, model, criterion, optimizer, scheduler, perfor
         labels = labels.to(device)
 
         if hyperparameters['USE_ADVANCED_MODEL']:
-            labels = labels.long()
+            labels = labels.long() # Ok sure but WHYYYYYYY
 
         model.zero_grad()
 
