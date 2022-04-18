@@ -125,7 +125,7 @@ def train_epoch(train_dataloader, model, criterion, optimizer, scheduler, perfor
 
         logits = model(inputs, masks)
 
-        if True:
+        if False:
             print(logits)
             print(logits.shape)
             print(labels)
