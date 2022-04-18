@@ -22,7 +22,9 @@ class AmazonReviewsDataset(Dataset):
             df = pd.read_pickle(path)
         else:
             df = loadData.getDF(path, size)
-            df = df[selected_columns].dropna()
+            df = df[selected_columns]
+            df['vote'] = df['vote'].fillna(0)
+            df = df.dropna()
             
             if save_pickle:
                 pickle_name = path.replace('.json.gz', '.pkl')
@@ -54,4 +56,4 @@ class AmazonReviewsDataset(Dataset):
 
 # For testing stuff
 if __name__ == "__main__":
-    dataset = AmazonReviewsDataset('tools')
+    dataset = AmazonReviewsDataset('music')
