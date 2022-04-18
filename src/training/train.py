@@ -26,7 +26,7 @@ default_hyperparameters = {
     # Model (not exhaustive, see the params for BertClassifier)
     "NUM_CLASSES": 2,
     "DROPOUT": 0.1,
-    "USE_ADVANCED_MODEL": False,
+    "USE_ADVANCED_MODEL": True,
 
     # Optimizer
     "MOMENTUM": 0.9, # Currently unused becuse we're using Adam
@@ -117,6 +117,9 @@ def train_epoch(train_dataloader, model, criterion, optimizer, scheduler, perfor
         inputs = inputs.to(device)
         masks = masks.to(device)
         labels = labels.to(device)
+
+        if hyperparameters['USE_ADVANCED_MODEL']:
+            labels = labels.long()
 
         model.zero_grad()
 
