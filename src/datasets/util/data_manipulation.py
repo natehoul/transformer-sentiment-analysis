@@ -81,4 +81,4 @@ def create_class_vector(c, num_classes):
 def convert_labels_to_vectors(labels):
     num_classes = len(np.unique(labels))
     new_labels = [create_class_vector(l, num_classes) for l in labels]
-    return np.array(new_labels)
+    return np.array(new_labels, dtype=float)
