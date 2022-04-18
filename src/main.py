@@ -21,4 +21,7 @@ if __name__ == "__main__":
     # If you want to change the hyperparameters found in train.py,
     # you can do so by adding them as all-caps keyword arguments to the
     # train() function
+    # If you want to continue a training session from before,
+    # pass the filename of the saved model (without the '.pt' extension)
+    # as the first argument, called session_name
     train()
