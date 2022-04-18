@@ -226,14 +226,60 @@ def validate_epoch(val_dataloader, model, criterion, performance_metrics, device
 
 
 
+# 'hp' = 'hyperparmeters' = ACTIVE hyperparameters, default or otherwise
+# 'sp' = 'special parameters' = NON-DEFAULT hyperparameters, specifically
+def get_descriptive_session_name(hp, sp):
+    data_info = f'{hp["DATASET"]}_{hp["DATA_TYPE"]}'
+    other_info = []
+
+    if "NUM_CLASSES" in sp:
+        other_info.append(f'{sp["NUM_CLASSES"]}classes')
+
+    if "BATCH_SIZE" in sp:
+        other_info.append(f'batch{sp}')
+
+    if "LEARNING_RATE" in sp:
+        other_info.append(f'lr{str(sp["LEARNING_RATE"])[2:]}')
+    
+    if "NUM_BERT_TOKENS" in sp:
+        other_info.append(f'{sp["NUM_BERT_TOKENS"]}tokens')
+
+    if "DROPOUT" in sp:
+        other_info.append(f'dropout{str(sp["DROPOUT"])[2:]}')
+
+    if "MOMENTUM" in sp:
+        other_info.append(f'momentum{str(sp["MOMENTUM"])[2:]}')
+
+    if "REGULARIZATION_WEIGHT" in sp:
+        weight = sp["REGULARIZATION_WEIGHT"]
+        if isinstance(weight, int) or weight == int(weight):
+            s = str(int(weight))
+        else:
+            s = str(weight).replace('.', ',')
+
+        other_info.append(f'regweight{s}')
+
+    if len(other_info) > 0:
+        name = f'{data_info}_{"_".join(other_info)}'
+
+    else:
+        name = data_info
+
+    return name
+
+
+
 # Train the model; full process
-def train(session_name, model_to_load='', **kwargs):
+def train(session_name='', model_to_load='', **kwargs):
     hyperparameters = {}
     for k in default_hyperparameters:
         if k in kwargs:
             hyperparameters[k] = kwargs[k]
         else:
             hyperparameters[k] = default_hyperparameters[k]
+
+    if session_name == '':
+        session_name = get_descriptive_session_name(hyperparameters, kwargs)
 
 
     train_dataloader, val_dataloader, model, criterion, optimizer, scheduler, performance_metrics, device = initialize(model_to_load, hyperparameters)
