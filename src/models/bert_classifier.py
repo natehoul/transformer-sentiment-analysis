@@ -71,8 +71,8 @@ class BertClassifier(nn.Module):
                 token_vecs_sum.append(sum_vec)
             #print(token_vecs_sum.shape)
             embeddings = torch.stack(token_vecs_sum).to(tokens_tensor.get_device())
-            print('EMBEDDING SIZE')
-            print(embeddings.size())
+            #print('EMBEDDING SIZE')
+            #print(embeddings.size())
             #embedding = torch.tensor([token_vecs_sum]).to(tokens_tensor.get_device())
             #print(embedding.size())
 
