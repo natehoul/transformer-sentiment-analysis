@@ -78,7 +78,7 @@ def initialize(model_to_load='', hyperparameters=default_hyperparameters):
 
     criterion = torch.nn.CrossEntropyLoss()# if hyperparameters['NUM_CLASSES'] == 2 else torch.nn.BCEWithLogitsLoss()
 
-    optimizer = torch.optim.Adam(params=model.parameters(), 
+    optimizer = torch.optim.AdamW(params=model.parameters(), 
                                  lr=hyperparameters['LEARNING_RATE'], 
                                  eps=hyperparameters['EPSILON'], 
                                  weight_decay=hyperparameters['REGULARIZATION_WEIGHT'])
