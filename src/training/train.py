@@ -47,6 +47,19 @@ basic_metrics = [
     "Validation Accuracy"
 ]
 
+all_metrics = [
+    "Training Loss",
+    "Training Accuracy",
+    "Training Precision",
+    "Training Recall",
+    "Training F1",
+    "Validation Loss",
+    "Validation Accuracy",
+    "Validation Precision",
+    "Validation Recall",
+    "Validation F1"
+]
+
 ### END HYPERPARAMETERS ###
 
 
@@ -70,19 +83,8 @@ def initialize(model_to_load='', hyperparameters=default_hyperparameters):
         model = BertClassifier(num_classes=hyperparameters['NUM_CLASSES'], 
                                dropout=hyperparameters['DROPOUT'], 
                                use_advanced_model=hyperparameters['USE_ADVANCED_MODEL'])
-        performance_metrics = [
-            "Training Loss",
-            "Training Accuracy",
-            "Training Precision",
-            "Training Recall",
-            "Training F1",
-            "Validation Loss",
-            "Validation Accuracy",
-            "Validation Precision",
-            "Validation Recall",
-            "Validation F1"
-        ] if not hyperparameters["BASIC_METRICS_ONLY"] else basic_metrics
-
+        
+        performance_metrics = basic_metrics if hyperparameters["BASIC_METRICS_ONLY"] else all_metrics
         performance_metrics = {metric:[] for metric in performance_metrics}
 
 
