@@ -37,7 +37,7 @@ def create_pyplot(results, cols_to_plot, name):
         if len(results[col]) > 0:
             plt.plot(results[col], label=col)
 
-    plt.legend()
+    plt.legend(bbox_to_anchor=(1.04, 1), loc="upper left")
     plt.savefig(filename_auto_stamp.format(name, 'png'), bbox_inches='tight', dpi=200)
     plt.close()
 
