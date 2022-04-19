@@ -52,10 +52,27 @@ def initialize(model_to_load='', hyperparameters=default_hyperparameters):
 
     if model_to_load and saved_models.exists(model_to_load):
         model = saved_models.load(model_to_load)
+        performance_metrics = results.load(model_to_load)
+    
     else:
         model = BertClassifier(num_classes=hyperparameters['NUM_CLASSES'], 
                                dropout=hyperparameters['DROPOUT'], 
                                use_advanced_model=hyperparameters['USE_ADVANCED_MODEL'])
+        performance_metrics = [
+        "Training Loss",
+        "Training Accuracy",
+        "Training Precision",
+        "Training Recall",
+        "Training F1",
+        "Validation Loss",
+        "Validation Accuracy",
+        "Validation Precision",
+        "Validation Recall",
+        "Validation F1"
+        ]
+
+        performance_metrics = {metric:[] for metric in performance_metrics}
+
 
     model = model.to(device)
 
@@ -78,21 +95,6 @@ def initialize(model_to_load='', hyperparameters=default_hyperparameters):
                                                 num_warmup_steps=0,
                                                 num_training_steps=num_steps)
 
-
-    performance_metrics = [
-        "Training Loss",
-        "Training Accuracy",
-        "Training Precision",
-        "Training Recall",
-        "Training F1",
-        "Validation Loss",
-        "Validation Accuracy",
-        "Validation Precision",
-        "Validation Recall",
-        "Validation F1"
-        ]
-
-    performance_metrics = {metric:[] for metric in performance_metrics}
 
     return train_dataloader, val_dataloader, model, criterion, optimizer, scheduler, performance_metrics, device
 
@@ -277,7 +279,13 @@ def get_descriptive_session_name(hp, sp):
 
 
 # Train the model; full process
-def train(session_name='', model_to_load='', **kwargs):
+# session_name is the thing to call this training session for the purposes of keeping track of output files
+# It can also be the name of a previous session WITH TIMESTAMP INCLUDED, in which case it will load the saved model
+# from earlier and continue the training, prepending a new timestamp (there will be two time stamps)
+# If you want to continue a previous session, find the full filename of the model you want to load (without the .pt exension)
+# and use that as the session_name
+# the kwargs are any non-default hyperparameters you want to apply (all caps, as usual)
+def train(session_name='', **kwargs):
     hyperparameters = {}
     for k in default_hyperparameters:
         if k in kwargs:
@@ -289,7 +297,7 @@ def train(session_name='', model_to_load='', **kwargs):
         session_name = get_descriptive_session_name(hyperparameters, kwargs)
 
 
-    train_dataloader, val_dataloader, model, criterion, optimizer, scheduler, performance_metrics, device = initialize(model_to_load, hyperparameters)
+    train_dataloader, val_dataloader, model, criterion, optimizer, scheduler, performance_metrics, device = initialize(session_name, hyperparameters)
 
     print("BEGINNING TRAINING")
     for epoch in range(hyperparameters['NUM_CLASSES']):
@@ -311,3 +319,25 @@ def train(session_name='', model_to_load='', **kwargs):
 
 
 
+# session_name is the full filename (without the .pt exension) of a previous training session with a model in saved_models
+# kwargs should be the exact same as when that session was run, which if non-default *should* be included in the name
+# to tell the truth I think most of the kwargs don't actually matter, but some might idk (anything related to the data (not the model) definitly matters)
+def validate(session_name, **kwargs):
+    assert saved_models.exists(session_name), "session does not exist in saved_models"
+
+    hyperparameters = {}
+    for k in default_hyperparameters:
+        if k in kwargs:
+            hyperparameters[k] = kwargs[k]
+        else:
+            hyperparameters[k] = default_hyperparameters[k]
+
+    train_dataloader, val_dataloader, model, criterion, optimizer, scheduler, performance_metrics, device = initialize(session_name, hyperparameters)
+
+    validate_epoch(val_dataloader, model, criterion, performance_metrics, device, hyperparameters)
+
+    print('Validation Results:')
+    for metric, values in performance_metrics.items():
+        most_recent_value = values[-1]
+        print(f'{metric}: {most_recent_value:.4f}', end='\t')
+    print()
