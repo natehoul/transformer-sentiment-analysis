@@ -39,6 +39,14 @@ default_hyperparameters = {
     "BASIC_METRICS_ONLY": False
 }
 
+
+basic_metrics = [
+    "Training Loss",
+    "Training Accuracy",
+    "Validation Loss",
+    "Validation Accuracy"
+]
+
 ### END HYPERPARAMETERS ###
 
 
@@ -54,6 +62,9 @@ def initialize(model_to_load='', hyperparameters=default_hyperparameters):
     if model_to_load and saved_models.exists(model_to_load):
         model = saved_models.load(model_to_load)
         performance_metrics = results.load(model_to_load)
+
+        if hyperparameters["BASIC_METRICS_ONLY"]:
+            performance_metrics = {k:performance_metrics[k] for k in basic_metrics}
     
     else:
         model = BertClassifier(num_classes=hyperparameters['NUM_CLASSES'], 
@@ -70,7 +81,7 @@ def initialize(model_to_load='', hyperparameters=default_hyperparameters):
             "Validation Precision",
             "Validation Recall",
             "Validation F1"
-        ]
+        ] if not hyperparameters["BASIC_METRICS_ONLY"] else basic_metrics
 
         performance_metrics = {metric:[] for metric in performance_metrics}
 
