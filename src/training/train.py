@@ -35,7 +35,8 @@ default_hyperparameters = {
     "EPSILON": 1e-8,
 
     # Misc
-    "NUM_EPOCHS": 2 # Increase this once everything actually works
+    "NUM_EPOCHS": 2, # Increase this once everything actually works
+    "BASIC_METRICS_ONLY": False
 }
 
 ### END HYPERPARAMETERS ###
@@ -138,7 +139,7 @@ def train_epoch(train_dataloader, model, criterion, optimizer, scheduler, perfor
 
 
         # Binary classifer, so we can get confusion matrix easily
-        if hyperparameters['NUM_CLASSES'] == 2:
+        if hyperparameters['NUM_CLASSES'] == 2 and not hyperparameters['BASIC_METRICS_ONLY']:
             matrix = confusion_matrix(ground_truth.cpu().numpy(), prediction.cpu().numpy())
             tn += matrix[0][0]
             fn += matrix[1][0]
@@ -154,7 +155,7 @@ def train_epoch(train_dataloader, model, criterion, optimizer, scheduler, perfor
     loss = sum(losses) / len(losses)
     performance_metrics['Training Loss'].append(loss)
 
-    if hyperparameters['NUM_CLASSES'] == 2:
+    if hyperparameters['NUM_CLASSES'] == 2 and not hyperparameters['BASIC_METRICS_ONLY']:
         accuracy = (tp + tn) / (tp + fp + tn + fn)
         precision = tp / (tp + fp) if tp + fp > 0 else 0
         recall = tp / (tp + fn)
