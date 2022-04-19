@@ -59,16 +59,16 @@ def initialize(model_to_load='', hyperparameters=default_hyperparameters):
                                dropout=hyperparameters['DROPOUT'], 
                                use_advanced_model=hyperparameters['USE_ADVANCED_MODEL'])
         performance_metrics = [
-        "Training Loss",
-        "Training Accuracy",
-        "Training Precision",
-        "Training Recall",
-        "Training F1",
-        "Validation Loss",
-        "Validation Accuracy",
-        "Validation Precision",
-        "Validation Recall",
-        "Validation F1"
+            "Training Loss",
+            "Training Accuracy",
+            "Training Precision",
+            "Training Recall",
+            "Training F1",
+            "Validation Loss",
+            "Validation Accuracy",
+            "Validation Precision",
+            "Validation Recall",
+            "Validation F1"
         ]
 
         performance_metrics = {metric:[] for metric in performance_metrics}
@@ -79,9 +79,9 @@ def initialize(model_to_load='', hyperparameters=default_hyperparameters):
     criterion = torch.nn.CrossEntropyLoss()# if hyperparameters['NUM_CLASSES'] == 2 else torch.nn.BCEWithLogitsLoss()
 
     optimizer = torch.optim.AdamW(params=model.parameters(), 
-                                 lr=hyperparameters['LEARNING_RATE'], 
-                                 eps=hyperparameters['EPSILON'], 
-                                 weight_decay=hyperparameters['REGULARIZATION_WEIGHT'])
+                                  lr=hyperparameters['LEARNING_RATE'], 
+                                  eps=hyperparameters['EPSILON'], 
+                                  weight_decay=hyperparameters['REGULARIZATION_WEIGHT'])
     
     train_dataloader, val_dataloader = get_dataloaders(dataset_name=hyperparameters['DATASET'],
                                                        data_type=hyperparameters['DATA_TYPE'], 
