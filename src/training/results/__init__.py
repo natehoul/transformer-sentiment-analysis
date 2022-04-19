@@ -19,7 +19,7 @@ filename_complete = f'{os.path.dirname(__file__)}/{"{}"}.{"{}"}'
 # Results should be stored in a dictionary with meaningful key names
 def save(results, name):
     df = pd.DataFrame(results)
-    df.to_csv(filename_auto_stamp.format(name, 'csv'))
+    df.to_csv(filename_auto_stamp.format(name, 'csv'), index=False)
 
 
 # Load results of previous training from CSV
@@ -33,14 +33,43 @@ def create_pyplot(results, cols_to_plot, name):
     if cols_to_plot == 'all':
         cols_to_plot = results.keys()
 
-    for col in cols_to_plot:
-        if len(results[col]) > 0:
-            plt.plot(results[col], label=col)
+    training = [col for col in cols_to_plot if col[:8] == 'Training' and len(results[col]) > 0]
+    validation = [col for col in cols_to_plot if col[:10] == 'Validation' and len(results[col]) > 0]
+    loss_cols = ['Training Loss', 'Validation Loss']
 
-    plt.legend(bbox_to_anchor=(1.04, 1), loc="upper left")
-    plt.savefig(filename_auto_stamp.format(name, 'png'), bbox_inches='tight', dpi=250)
+    # Normalize the losses to the range [0, 1]
+    max_loss = max([max(results[loss_col]) for loss_col in loss_cols if loss_col in cols_to_plot])
+    for loss_col in loss_cols:
+        if loss_col in cols_to_plot:
+            results[loss_col] = [loss / max_loss for loss in results[loss_col]]
+
+    # Each type of data (loss, accuracy, precision, recall, f1) has a unique color
+    color_order = ['red', 'green', 'blue', 'purple', 'black']
+
+    # Each data group (training, validation) has a unique line style
+    line_style = ['dashed', 'solid']
+
+    for result_type, style in zip((training, validation), line_style):
+        for col, color in zip(result_type, color_order):
+            label = col
+            if col in loss_cols:
+                label += ' (Normalized)'
+
+            plt.plot(results[col], label=label, linestyle=style, color=color, linewidth=0.75)
+
+    # All data is in the range [0, 1]
+    plt.ylim(-0.05, 1.05)
+
+    # The legend will be outside the plot area
+    plt.legend(bbox_to_anchor=(1, 1), loc="upper left")
+
+    
+    plt.savefig(filename_auto_stamp.format(name, 'png'), bbox_inches='tight', dpi=300)
     plt.close()
 
 
 if __name__ == "__main__":
-    print(TIMESTAMP)
+    name = "2022-04-19_16-04-47_music_rating"
+    results = load(name)
+    #save(results, "music_rating")
+    create_pyplot(results, 'all', name)
