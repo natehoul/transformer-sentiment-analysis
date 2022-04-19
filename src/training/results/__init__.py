@@ -19,13 +19,13 @@ filename_complete = f'{os.path.dirname(__file__)}/{"{}"}.{"{}"}'
 # Results should be stored in a dictionary with meaningful key names
 def save(results, name):
     df = pd.DataFrame(results)
-    df.to_csv(filename_auto_stamp.format(name, '.csv'))
+    df.to_csv(filename_auto_stamp.format(name, 'csv'))
 
 
 # Load results of previous training from CSV
 # Could be useful if you want to continue a traning session from before
 def load(name):
-    return pd.read_csv(filename_complete.format(name, '.csv')).to_dict(orient='list')
+    return pd.read_csv(filename_complete.format(name, 'csv')).to_dict(orient='list')
 
 # Create a pyplot of the results
 # cols_to_plot should be a list of strings, or the string 'all'
@@ -38,7 +38,7 @@ def create_pyplot(results, cols_to_plot, name):
             plt.plot(results[col], label=col)
 
     plt.legend()
-    plt.savefig(filename_auto_stamp.format(name, '.png'), bbox_inches='tight', dpi=200)
+    plt.savefig(filename_auto_stamp.format(name, 'png'), bbox_inches='tight', dpi=200)
     plt.close()
 
 
