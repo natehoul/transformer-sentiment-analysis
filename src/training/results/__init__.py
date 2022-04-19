@@ -39,6 +39,7 @@ def create_pyplot(results, cols_to_plot, name):
 
     plt.legend()
     plt.savefig(filename_auto_stamp.format(name, '.png'), bbox_inches='tight', dpi=200)
+    plt.close()
 
 
 if __name__ == "__main__":
