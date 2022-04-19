@@ -300,7 +300,7 @@ def train(session_name='', **kwargs):
     train_dataloader, val_dataloader, model, criterion, optimizer, scheduler, performance_metrics, device = initialize(session_name, hyperparameters)
 
     print("BEGINNING TRAINING")
-    for epoch in range(hyperparameters['NUM_CLASSES']):
+    for epoch in range(hyperparameters['NUM_EPOCHS']):
         train_epoch(train_dataloader, model, criterion, optimizer, scheduler, performance_metrics, device, hyperparameters)
         validate_epoch(val_dataloader, model, criterion, performance_metrics, device, hyperparameters)
 
