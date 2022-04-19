@@ -156,7 +156,7 @@ def train_epoch(train_dataloader, model, criterion, optimizer, scheduler, perfor
 
     if hyperparameters['NUM_CLASSES'] == 2:
         accuracy = (tp + tn) / (tp + fp + tn + fn)
-        precision = tp / (tp + fp)
+        precision = tp / (tp + fp) if tp + fp > 0 else 0
         recall = tp / (tp + fn)
         f1 = (2 * precision * recall) / (precision + recall)
 
@@ -220,7 +220,7 @@ def validate_epoch(val_dataloader, model, criterion, performance_metrics, device
 
     if hyperparameters['NUM_CLASSES'] == 2:
         accuracy = (tp + tn) / (tp + fp + tn + fn)
-        precision = tp / (tp + fp)
+        precision = tp / (tp + fp) if tp + fp > 0 else 0
         recall = tp / (tp + fn)
         f1 = (2 * precision * recall) / (precision + recall)
 
