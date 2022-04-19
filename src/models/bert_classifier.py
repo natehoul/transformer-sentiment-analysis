@@ -89,6 +89,8 @@ class BertClassifier(nn.Module):
         # Feed input to classifier to compute logits
         logits = self.classifier(embeddings)
 
+        logits = torch.softmax(logits, dim=1)
+
         return logits
 
 
