@@ -219,7 +219,7 @@ def validate_epoch(val_dataloader, model, criterion, performance_metrics, device
     performance_metrics['Validation Loss'].append(loss)
 
     if hyperparameters['NUM_CLASSES'] == 2:
-        accuracy = (tp + fp) / (tp + fp + tn + fn)
+        accuracy = (tp + tn) / (tp + fp + tn + fn)
         precision = tp / (tp + fp)
         recall = tp / (tp + fn)
         f1 = (2 * precision * recall) / (precision + recall)
