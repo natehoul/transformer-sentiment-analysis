@@ -29,7 +29,7 @@ def load(name):
 
 # Create a pyplot of the results
 # cols_to_plot should be a list of strings, or the string 'all'
-def create_pyplot(results, cols_to_plot, name):
+def create_pyplot(results, cols_to_plot, name, normalize_loss=False):
     if cols_to_plot == 'all':
         cols_to_plot = results.keys()
 
@@ -37,11 +37,12 @@ def create_pyplot(results, cols_to_plot, name):
     validation = [col for col in cols_to_plot if col[:10] == 'Validation' and len(results[col]) > 0]
     loss_cols = ['Training Loss', 'Validation Loss']
 
-    # Normalize the losses to the range [0, 1]
-    max_loss = max([max(results[loss_col]) for loss_col in loss_cols if loss_col in cols_to_plot])
-    for loss_col in loss_cols:
-        if loss_col in cols_to_plot:
-            results[loss_col] = [loss / max_loss for loss in results[loss_col]]
+    if normalize_loss:
+        # Normalize the losses to the range [0, 1]
+        max_loss = max([max(results[loss_col]) for loss_col in loss_cols if loss_col in cols_to_plot])
+        for loss_col in loss_cols:
+            if loss_col in cols_to_plot:
+                results[loss_col] = [loss / max_loss for loss in results[loss_col]]
 
     # Each type of data (loss, accuracy, precision, recall, f1) has a unique color
     color_order = ['red', 'green', 'blue', 'purple', 'black']
@@ -52,7 +53,7 @@ def create_pyplot(results, cols_to_plot, name):
     for result_type, style in zip((training, validation), line_style):
         for col, color in zip(result_type, color_order):
             label = col
-            if col in loss_cols:
+            if col in loss_cols and normalize_loss:
                 label += ' (Normalized)'
 
             plt.plot(results[col], label=label, linestyle=style, color=color, linewidth=0.75)
