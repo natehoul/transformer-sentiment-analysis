@@ -17,9 +17,10 @@ filename_complete = f'{os.path.dirname(__file__)}/{"{}"}.{"{}"}'
 
 # Save the results to CSV
 # Results should be stored in a dictionary with meaningful key names
-def save(results, name):
+def save(results, name, use_complete_name=False):
     df = pd.DataFrame(results)
-    df.to_csv(filename_auto_stamp.format(name, 'csv'), index=False)
+    filename = filename_complete if use_complete_name else filename_auto_stamp
+    df.to_csv(filename.format(name, 'csv'), index=False)
 
 
 # Load results of previous training from CSV
@@ -29,7 +30,7 @@ def load(name):
 
 # Create a pyplot of the results
 # cols_to_plot should be a list of strings, or the string 'all'
-def create_pyplot(results, cols_to_plot, name, normalize_loss=False):
+def create_pyplot(results, cols_to_plot, name, normalize_loss=False, use_complete_name=False):
     if cols_to_plot == 'all':
         cols_to_plot = results.keys()
 
@@ -64,13 +65,16 @@ def create_pyplot(results, cols_to_plot, name, normalize_loss=False):
     # The legend will be outside the plot area
     plt.legend(bbox_to_anchor=(1, 1), loc="upper left")
 
+    filename = filename_complete if use_complete_name else filename_auto_stamp
     
-    plt.savefig(filename_auto_stamp.format(name, 'png'), bbox_inches='tight', dpi=300)
+    plt.savefig(filename.format(name, 'png'), bbox_inches='tight', dpi=300)
     plt.close()
 
 
 if __name__ == "__main__":
-    name = "2022-04-19_16-04-47_music_rating"
+    name = "2022-04-20_00-36-05_music_rating_no_dropout"
     results = load(name)
-    #save(results, "music_rating")
-    create_pyplot(results, 'all', name)
+    #del results['Unnamed: 0']
+    #save(results, name, True)
+    #exit(0)
+    create_pyplot(results, 'all', name, use_complete_name=True)
