@@ -259,7 +259,7 @@ def get_descriptive_session_name(hp, sp):
         other_info.append(f'{sp["NUM_CLASSES"]}classes')
 
     if "BATCH_SIZE" in sp:
-        other_info.append(f'batch{sp}')
+        other_info.append(f'batch{sp["BATCH_SIZE"]}')
 
     if "LEARNING_RATE" in sp:
         other_info.append(f'lr{str(sp["LEARNING_RATE"])[2:]}')
